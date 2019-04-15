@@ -1,55 +1,75 @@
 import React, { Component } from 'react';
 import './App.css';
+import { log } from 'handlebars';
 
 class App extends Component {
 
   state = {
     temp:"",
     day:"",
+    condition:"",
     image:"",
     location:"",
+    cities:[],
+    prompt: false,
   }
 
-  // handleClick = async(e) => {
-  //   e.preventDefault();
-  //   const city = e.target.elements.city.value;
-  //   const country = e.target.elements.country.value;
-  //   // inject the city and country variables above into the api fetch below
-  //   const api = await fetch(`http........./${country}/${city}`);
-  //   const rtrn = await api.json();
-
-  //   if(city && country) {
-  //     this.setState({
-  //       temp:rtrn.current_obvservation.temp_c, 
-  //       // { or whatever the JOSN object is from the API }
-  //       day: rtrn.current_obvservation.day,
-  //       // { or whatever the JOSN object is from the API }
-  //       image:rtrn.current_obvservation.image,
-  //       // { or whatever the JOSN object is from the API }
-  //       location:rtrn.current_obvservation.location,
-  //       // { or whatever the JOSN object is from the API }
-  //       error:"",
-  //     });
-  //   } else {
-  //     this.setState({
-  //       temp:"",
-  //       day:"",
-  //       image:"",
-  //       location:"",
-  //       error:"Wrong Input",
-  //     }); 
-  //   }
-    
-  // }
-
-  handleClick = (e) => {
+  handleClick = async (e) => {
     e.preventDefault();
-    this.setState({
-      temp:"10",
-      day:"Monday",
-      image: "./weather.jpg",
-    });
+    const { value } = this.select
+    if (!value) {
+      this.setState({
+        prompt: true,
+      })
+      return null
+    }
+    console.log('select', value);
+
+    const fakeAPI = await fetch(`./${value}.json`)
+    const city = await fakeAPI.json()
     
+    this.setState({
+      ...city
+    })
+    
+
+    // const fakeAPI = await fetch('./countries.json')
+    // const data = await fakeAPI.json()
+    // console.log('rtrn', Object.keys(data)[0])
+
+    // console.log(data[Object.keys(data)[0]].london)
+    // // map out the api
+
+    // this.setState({
+    //   temp: 30,
+    //   day:"Monday",
+    //   condition: "rainy",
+    //   image: "./weather.jpg",
+    // });  
+  }
+
+  getCities = async (e) => {
+    e.preventDefault();
+
+    const fakeAPI = await fetch(`./${e.target.value}.json`)
+    const cities = await fakeAPI.json()
+    
+    this.setState({
+      cities: cities
+    })    
+  }
+
+  getConditions = async (e) => {
+    e.preventDefault();
+
+    const fakeAPI = await fetch(`./${e.target.value}.json`)
+    const city = await fakeAPI.json()
+    
+    this.setState({
+      ...city
+    })
+    
+
   }
 
 
@@ -60,15 +80,39 @@ class App extends Component {
           <div className="card" id="card1">
           <h1>Weather App</h1>
             <form onSubmit={this.handleClick}>
-              <input type="text" placeholder="enter city" name="city" className="form-control"/><br></br>
-              <input type="text" placeholder="enter country" name="country" className="form-control"/><br></br>
+              <p>Select Country</p>
+                <select onChange={this.getCities} name="country" className="dropdown">
+                  <option value="">(Select Country)</option>
+                  <option value="england">England</option>
+                  <option value="france">France</option>
+                  <option value="spain">Spain</option>
+                </select>
+                <br></br>
+              <div><p>Select City</p>
+
+                <select
+                  ref={node => this.select = node}
+                  // onChange={this.getConditions}
+                  name="city"
+                  placeholder="enter city"
+                  className="dropdown"
+                >
+                  {this.state.cities.length === 0 && <option disabled value="city">---</option>}
+                  <option value="">(Select City)</option>
+                  {(this.state.cities).map((keyName, i) => (
+                    <option key={i} value={keyName}>{keyName} </option>
+                  ))}
+                </select>
+
+                <br></br></div>
               <button className="btn btn-info">Get Weather</button>
             </form>
             {this.state.temp!==''?<h1>Temperature: {this.state.temp} degrees celcius</h1>:''}
             {this.state.day!==''?<h1>Day: {this.state.day} </h1>:''}
-            {this.state.location!==''?<h1>Location: {this.state.location} </h1>:''}
+            {this.state.condition!==''?<h1>Condition: {this.state.condition} </h1>:''}
             {this.state.image!==''?<img src={this.state.image} width="50px" height="50px" />:''}
             {/* {this.state.error!==''?<h1>Error! {this.state.error} </h1>:''} */}
+            {this.state.prompt && 'please enter a city'}
           </div>
         </center>
       </div>
