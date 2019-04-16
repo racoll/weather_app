@@ -111,7 +111,6 @@ class App extends Component {
             {this.state.day!==''?<h1>Day: {this.state.day} </h1>:''}
             {this.state.condition!==''?<h1>Condition: {this.state.condition} </h1>:''}
             {this.state.image!==''?<img src={this.state.image} width="50px" height="50px" />:''}
-            {/* {this.state.error!==''?<h1>Error! {this.state.error} </h1>:''} */}
             {this.state.prompt && 'please enter a city'}
           </div>
         </center>
