@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import './App.css';
-import { log } from 'handlebars';
 
 class App extends Component {
 
@@ -30,29 +29,17 @@ class App extends Component {
     
     this.setState({
       ...city
-    })
-    
-
-    // const fakeAPI = await fetch('./countries.json')
-    // const data = await fakeAPI.json()
-    // console.log('rtrn', Object.keys(data)[0])
-
-    // console.log(data[Object.keys(data)[0]].london)
-    // // map out the api
-
-    // this.setState({
-    //   temp: 30,
-    //   day:"Monday",
-    //   condition: "rainy",
-    //   image: "./weather.jpg",
-    // });  
+    }) 
   }
+
 
   getCities = async (e) => {
     e.preventDefault();
 
     const fakeAPI = await fetch(`./${e.target.value}.json`)
     const cities = await fakeAPI.json()
+    console.log(cities);
+    
     
     this.setState({
       cities: cities
@@ -64,7 +51,8 @@ class App extends Component {
 
     const fakeAPI = await fetch(`./${e.target.value}.json`)
     const city = await fakeAPI.json()
-    
+    console.log(city);
+
     this.setState({
       ...city
     })
